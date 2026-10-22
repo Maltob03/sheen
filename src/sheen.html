@@ -1,4 +1,7 @@
-<title>Xcode Codeshot</title>
+<title>Sheen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Geist+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
 /* Layout: a dark macOS-style workbench. Top bar, a dotted canvas holding the framed window, a dock of controls pinned to the bottom. */
 :root {
@@ -64,7 +67,7 @@ button { cursor: pointer; }
 .hint { margin: 0; color: var(--muted); font-size: 12px; text-align: center; text-wrap: balance; }
 
 /* The exported frame */
-.frame { display: inline-block; vertical-align: top; transition: padding .2s ease; }
+.frame { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; vertical-align: top; }
 .window {
   --bg: #1f1f24; --plain: #ffffffd9; --sel: #515b70; --line: #23252b; --cursor: #fff;
   --chrome-bg: #2a2a2f; --chrome-fg: #ffffff99; --chrome-border: #ffffff14; --edge: #00000099; --rim: #ffffff1f;
@@ -109,13 +112,13 @@ button { cursor: pointer; }
 .gutter {
   position: relative; flex: none; text-align: right; user-select: none; -webkit-user-select: none;
   color: var(--gutter);
-  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-family: var(--code-font, var(--mono)); font-variant-numeric: tabular-nums;
 }
 .gutter span { display: block; cursor: pointer; }
 .gutter span.on { color: var(--plain); }
 .code-wrap { position: relative; flex: 1; min-width: 0; }
 .code, .input {
-  margin: 0; border: 0; font-family: var(--mono); white-space: pre; tab-size: 4; -moz-tab-size: 4;
+  margin: 0; border: 0; font-family: var(--code-font, var(--mono)); white-space: pre; tab-size: 4; -moz-tab-size: 4;
   font-variant-ligatures: none; letter-spacing: 0;
 }
 .code { position: relative; color: var(--plain); font-weight: var(--fw, 400); }
@@ -130,7 +133,7 @@ button { cursor: pointer; }
 /* Dock */
 .dock {
   position: sticky; bottom: 0; z-index: 20;
-  display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 14px 22px;
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 12px 14px;
   padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
   background: var(--panel); border-top: 1px solid var(--line);
   -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
@@ -151,8 +154,8 @@ button { cursor: pointer; }
 .theme-btn:hover { border-color: #3d4049; }
 .theme-btn .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chip { width: 20px; height: 20px; border-radius: 5px; flex: none; display: grid; place-items: center; font: 700 9px/1 var(--mono); box-shadow: inset 0 0 0 1px #ffffff1f; }
-.swatches { display: flex; gap: 6px; flex-wrap: wrap; }
-.sw { width: 26px; height: 26px; border-radius: 50%; border: 0; padding: 0; box-shadow: inset 0 0 0 1px #ffffff26; }
+.swatches { display: flex; gap: 5px; flex-wrap: wrap; }
+.sw { width: 24px; height: 24px; border-radius: 50%; border: 0; padding: 0; box-shadow: inset 0 0 0 1px #ffffff26; }
 .sw[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--app-bg), 0 0 0 4px var(--text); }
 .sw.none { background: repeating-conic-gradient(#3a3d45 0% 25%, #24262c 0% 50%) 0 0 / 10px 10px; }
 .switch { width: 42px; height: 26px; border-radius: 13px; border: 1px solid var(--line); background: var(--well); padding: 2px; display: flex; }
@@ -201,6 +204,14 @@ button { cursor: pointer; }
   max-width: calc(100vw - 32px); padding: 9px 14px; border-radius: 9px; background: #2a2d35; border: 1px solid #3a3d46; box-shadow: 0 12px 30px #0008;
 }
 
+/* Drag handle on the window's right edge (screen only) */
+.grip {
+  position: absolute; z-index: 4; top: 0; right: -1px; width: 14px; height: 100%; cursor: ew-resize;
+  display: grid; place-items: center; touch-action: none;
+}
+.grip::before { content: ""; width: 4px; height: 36px; border-radius: 2px; background: var(--chrome-strong); opacity: 0; transition: opacity .15s ease; }
+.window:hover .grip::before, .grip.dragging::before { opacity: .45; }
+.frame-note { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 @media (max-width: 640px) {
   .brand span { display: none; }
   .stage { padding-top: 24px; }
@@ -215,15 +226,19 @@ button { cursor: pointer; }
   <header class="topbar">
     <div class="brand">
       <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
-        <rect x="1" y="1" width="24" height="24" rx="6" fill="#1f62e8"/>
-        <rect x="1" y="1" width="24" height="24" rx="6" fill="url(#g)"/>
-        <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fb4ff" stop-opacity=".7"/><stop offset="1" stop-color="#1f62e8" stop-opacity="0"/></linearGradient></defs>
-        <path d="M10 9 6 13l4 4M16 9l4 4-4 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="bm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fc2ff"/><stop offset=".55" stop-color="#2459dc"/><stop offset="1" stop-color="#1a237e"/></linearGradient>
+          <linearGradient id="bs" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        </defs>
+        <rect x="1" y="1" width="24" height="24" rx="6.5" fill="url(#bm)"/>
+        <path d="M5 21 21 5" stroke="url(#bs)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M10.5 9 6.5 13l4 4M15.5 9l4 4-4 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <b>Codeshot</b>
+      <b>Sheen</b>
       <span id="themeCount">Code images in Xcode's own color themes</span>
     </div>
     <div class="actions">
+      <button class="btn" id="copyLink" type="button" hidden>Copy link</button>
       <button class="btn" id="copyCode" type="button">Copy code</button>
       <button class="btn" id="copyImg" type="button">Copy image</button>
       <div class="split">
@@ -240,6 +255,7 @@ button { cursor: pointer; }
       <div class="holder" id="holder">
         <div class="frame" id="frame">
           <div class="window" id="window">
+            <div class="grip no-export" id="grip" title="Drag to widen. Double-click to reset." aria-hidden="true"></div>
             <div class="chrome" id="chrome"></div>
             <div class="editor" id="editor">
               <div class="hl-layer" id="hlLayer"></div>
@@ -253,7 +269,7 @@ button { cursor: pointer; }
         </div>
       </div>
     </div>
-    <p class="hint">Type or paste in the window. Click a line number to highlight that line. Drop a <b>.xccolortheme</b> file anywhere to add your own theme.</p>
+    <p class="hint">Type or paste in the window; the language is detected when you paste. Drag the right edge to widen it, click a line number to highlight a line, and drop a <b>.xccolortheme</b> file anywhere to add your own theme.</p>
   </main>
 
   <footer class="dock" id="dock">
@@ -276,6 +292,10 @@ button { cursor: pointer; }
       <div class="seg" id="chromes" role="group" aria-label="Window style"></div>
     </div>
     <div class="ctl">
+      <span class="lbl">Frame</span>
+      <div class="seg" id="ratios" role="group" aria-label="Frame shape"></div>
+    </div>
+    <div class="ctl">
       <span class="lbl">Lines</span>
       <button class="switch" id="lnSwitch" type="button" role="switch" aria-checked="true" aria-label="Line numbers"></button>
     </div>
@@ -284,7 +304,11 @@ button { cursor: pointer; }
       <select class="select" id="lang"></select>
     </div>
     <div class="ctl">
-      <span class="lbl">Font size</span>
+      <label class="lbl" for="font">Font</label>
+      <select class="select" id="font"></select>
+    </div>
+    <div class="ctl">
+      <span class="lbl">Size</span>
       <div class="stepper"><button type="button" id="szDown" aria-label="Smaller">−</button><output id="szOut">15</output><button type="button" id="szUp" aria-label="Larger">+</button></div>
     </div>
   </footer>
@@ -476,13 +500,25 @@ function shadowCSS() {
 const PADS = [16, 32, 64, 128];
 const CHROMES = [["xcode","Xcode"],["plain","Plain"],["none","None"]];
 const SCALES = [1, 2, 3, 4];
+const RATIOS = [["auto", "Auto"], ["16:9", "16:9"], ["4:3", "4:3"], ["1:1", "1:1"]];
+// Webfonts ship with the self-hosted build (fonts/<id>-<weight>.woff2) and come from Google Fonts in the artifact.
+const FONTS = [
+  { id: "sf", name: "SF Mono", stack: 'ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace' },
+  { id: "jetbrains-mono", name: "JetBrains Mono", family: "JetBrains Mono" },
+  { id: "geist-mono", name: "Geist Mono", family: "Geist Mono" },
+  { id: "ibm-plex-mono", name: "IBM Plex Mono", family: "IBM Plex Mono" },
+  { id: "fira-code", name: "Fira Code", family: "Fira Code" }
+];
+const fontStack = (f) => f.stack || `"${f.family}", ui-monospace, "SF Mono", Menlo, monospace`;
+const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+const IN_ARTIFACT = !!window.claude?.use;
 
 // ---------- utilities ----------
 const $ = (s) => document.querySelector(s);
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const store = {
-  get(k, d) { try { const v = localStorage.getItem("codeshot:" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem("codeshot:" + k, JSON.stringify(v)); } catch {} }
+  get(k, d) { try { const v = localStorage.getItem("sheen:" + k) ?? localStorage.getItem("codeshot:" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("sheen:" + k, JSON.stringify(v)); } catch {} }
 };
 function hexToRgb(h) {
   h = h.replace("#", "");
@@ -512,7 +548,8 @@ function toast(msg) {
 // ---------- state ----------
 let imported = store.get("imported", []);
 const defaults = { theme: "Default (Dark)", bg: "tahoe", pad: 64, chrome: "xcode", ln: true, lang: "swift", size: 15,
-  scale: 2, file: "OrderView.swift", project: "Barista", code: SAMPLES.swift, hl: [] };
+  scale: 2, file: "OrderView.swift", project: "Barista", code: SAMPLES.swift, hl: [],
+  font: IS_MAC ? "sf" : "jetbrains-mono", ratio: "auto", width: 0 };
 const state = Object.assign({}, defaults, store.get("state", {}));
 let saveTimer;
 function persist() { clearTimeout(saveTimer); saveTimer = setTimeout(() => store.set("state", state), 250); }
@@ -799,12 +836,93 @@ function renderCode() {
   }
 }
 
+function currentFont() { return FONTS.find(f => f.id === state.font) || FONTS[0]; }
+function applyFont() {
+  const f = currentFont();
+  els.window.style.setProperty("--code-font", fontStack(f));
+  if (f.family && document.fonts?.load) {
+    Promise.all([400, 500, 700].map(w => document.fonts.load(`${w} 16px "${f.family}"`))).then(fitFrame, () => {});
+  }
+}
+// Frame shapes for social posts: grow the frame around the window to the chosen ratio.
+function fitFrame() {
+  const fs = els.frame.style;
+  els.window.style.minWidth = state.width ? state.width + "px" : "";
+  fs.width = fs.height = "";
+  if (state.ratio !== "auto") {
+    const [a, b] = state.ratio.split(":").map(Number), r = a / b;
+    const w = els.window.offsetWidth + 2 * state.pad, h = els.window.offsetHeight + 2 * state.pad;
+    if (w / h < r) { fs.width = Math.round(h * r) + "px"; fs.height = h + "px"; }
+    else { fs.width = w + "px"; fs.height = Math.round(w / r) + "px"; }
+  }
+}
+function setLang(id, { swapSample = true } = {}) {
+  const unchanged = Object.values(SAMPLES).includes(state.code);
+  state.lang = id;
+  if (swapSample && unchanged && SAMPLES[id]) {
+    state.code = SAMPLES[id]; state.hl = [];
+    state.file = { swift: "OrderView.swift", objectivec: "Barista.m", python: "order.py", typescript: "order.ts" }[id];
+  } else {
+    state.file = state.file.replace(/(\.[A-Za-z0-9+]+)?$/, "." + langInfo(id)[2]);
+  }
+  renderChrome(); renderCode(); renderControls(); persist();
+}
+function autoDetect() {
+  if (!window.hljs || state.code.trim().length < 24) return;
+  const ids = LANGS.map(l => l[0]).filter(id => id !== "plaintext" && hljs.getLanguage(id));
+  const r = hljs.highlightAuto(state.code, ids);
+  if (!r.language || r.relevance < 6 || r.language === state.lang) return;
+  // A file name left over from a sample gets the name of the pasted code's first type or function.
+  const sampleNames = ["OrderView", "Barista", "order"], base = state.file.replace(/\.[^.]+$/, "");
+  if (sampleNames.includes(base)) state.file = (firstSymbol(state.code)?.name || "main") + ".txt";
+  setLang(r.language, { swapSample: false });
+  toast(`Detected ${langInfo(r.language)[1]}`);
+}
+
+// ---------- share links (self-hosted only: the artifact viewer drops #key=value) ----------
+const SHARE_KEYS = ["code", "lang", "theme", "bg", "pad", "chrome", "ln", "size", "file", "project", "hl", "font", "ratio", "width"];
+const b64url = { enc: (u8) => { let s = ""; for (const b of u8) s += String.fromCharCode(b); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); },
+  dec: (str) => Uint8Array.from(atob(str.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0)) };
+async function packState() {
+  const data = Object.fromEntries(SHARE_KEYS.map(k => [k, state[k]]));
+  const custom = imported.find(t => t.name === state.theme);
+  if (custom) data.themeData = custom;
+  const stream = new Blob([JSON.stringify(data)]).stream().pipeThrough(new CompressionStream("deflate-raw"));
+  return b64url.enc(new Uint8Array(await new Response(stream).arrayBuffer()));
+}
+async function unpackState(str) {
+  const stream = new Blob([b64url.dec(str)]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+  return JSON.parse(await new Response(stream).text());
+}
+async function copyLink() {
+  if (!window.CompressionStream) { toast("This browser can't make share links."); return; }
+  const url = `${location.origin}${location.pathname}#s=${await packState()}`;
+  history.replaceState(null, "", url);
+  try { await navigator.clipboard.writeText(url); toast("Link copied"); }
+  catch { toast("Link ready in the address bar. Copy it from there."); }
+}
+async function loadSharedState() {
+  if (!location.hash.startsWith("#s=") || !window.DecompressionStream) return;
+  try {
+    const data = await unpackState(location.hash.slice(3));
+    if (data.themeData?.name && data.themeData?.c) {
+      imported = imported.filter(t => t.name !== data.themeData.name).concat(data.themeData);
+      store.set("imported", imported);
+    }
+    for (const k of SHARE_KEYS) if (k in data) state[k] = data[k];
+    history.replaceState(null, "", location.pathname);
+    renderAll(); persist(); if (!data._quiet) toast("Opened shared snippet");
+  } catch { toast("This share link is damaged or incomplete."); }
+}
+
 function renderControls() {
   document.querySelectorAll("#pads button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === state.pad)));
   document.querySelectorAll("#chromes button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === state.chrome)));
   document.querySelectorAll("#scales button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === state.scale)));
   $("#lnSwitch").setAttribute("aria-checked", String(state.ln));
   $("#lang").value = state.lang;
+  $("#font").value = state.font;
+  document.querySelectorAll("#ratios button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === state.ratio)));
   $("#szOut").textContent = state.size;
   $("#exportBtn").textContent = `Export PNG ${state.scale}×`;
 }
@@ -829,7 +947,7 @@ function renderThemeLists() {
       ${label === "Imported" ? `<button type="button" class="btn" style="height:24px;margin-top:4px;font-size:11px" data-remove="${esc(t.name)}">Remove</button>` : ""}</div>`).join("")}</div>`).join("");
 }
 
-function renderAll() { applyTheme(); renderChrome(); renderCode(); renderControls(); }
+function renderAll() { applyTheme(); applyFont(); renderChrome(); renderCode(); renderControls(); fitFrame(); }
 
 // ---------- controls ----------
 function buildControls() {
@@ -838,6 +956,28 @@ function buildControls() {
   $("#chromes").innerHTML = CHROMES.map(([v, l]) => `<button type="button" data-v="${v}">${l}</button>`).join("");
   $("#scales").innerHTML = SCALES.map(s => `<button type="button" data-v="${s}">${s}×</button>`).join("");
   $("#lang").innerHTML = LANGS.map(l => `<option value="${l[0]}">${l[1]}</option>`).join("");
+  $("#font").innerHTML = FONTS.map(f => `<option value="${f.id}">${f.name}</option>`).join("");
+  $("#ratios").innerHTML = RATIOS.map(([v, l]) => `<button type="button" data-v="${v}">${l}</button>`).join("");
+  $("#font").addEventListener("change", e => { state.font = e.target.value; applyFont(); persist(); });
+  $("#ratios").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.ratio = b.dataset.v; fitFrame(); renderControls(); persist(); });
+  new ResizeObserver(() => fitFrame()).observe(els.window);
+
+  // Width handle: the window can be widened past its content, never narrowed below it.
+  const grip = $("#grip");
+  grip.addEventListener("pointerdown", e => {
+    e.preventDefault(); try { grip.setPointerCapture(e.pointerId); } catch {} grip.classList.add("dragging");
+    const x0 = e.clientX, w0 = els.window.offsetWidth;
+    const move = (ev) => { state.width = Math.max(320, Math.round(w0 + (ev.clientX - x0))); fitFrame(); };
+    const up = () => { grip.classList.remove("dragging"); grip.removeEventListener("pointermove", move); persist(); };
+    grip.addEventListener("pointermove", move);
+    grip.addEventListener("pointerup", up, { once: true });
+    grip.addEventListener("pointercancel", up, { once: true });
+  });
+  grip.addEventListener("dblclick", () => { state.width = 0; fitFrame(); persist(); });
+
+  const linkBtn = $("#copyLink");
+  linkBtn.hidden = IN_ARTIFACT || !window.CompressionStream;
+  linkBtn.addEventListener("click", copyLink);
 
   $("#bgs").addEventListener("click", e => { const b = e.target.closest(".sw"); if (!b) return; state.bg = b.dataset.id; renderBg(); persist(); });
   $("#pads").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.pad = +b.dataset.v; renderBg(); renderControls(); persist(); });
@@ -846,18 +986,7 @@ function buildControls() {
   $("#lnSwitch").addEventListener("click", () => { state.ln = !state.ln; renderCode(); renderControls(); persist(); });
   $("#szDown").addEventListener("click", () => { state.size = Math.max(10, state.size - 1); renderCode(); renderControls(); persist(); });
   $("#szUp").addEventListener("click", () => { state.size = Math.min(28, state.size + 1); renderCode(); renderControls(); persist(); });
-  $("#lang").addEventListener("change", e => {
-    const unchanged = Object.values(SAMPLES).includes(state.code);
-    state.lang = e.target.value;
-    const ext = langInfo(state.lang)[2];
-    if (unchanged && SAMPLES[state.lang]) {
-      state.code = SAMPLES[state.lang]; state.hl = [];
-      state.file = { swift: "OrderView.swift", objectivec: "Barista.m", python: "order.py", typescript: "order.ts" }[state.lang];
-    } else {
-      state.file = state.file.replace(/(\.[A-Za-z0-9+]+)?$/, "." + ext);
-    }
-    renderChrome(); renderCode(); persist();
-  });
+  $("#lang").addEventListener("change", e => setLang(e.target.value));
 
   els.gutter.addEventListener("click", e => {
     const s = e.target.closest("span[data-i]"); if (!s) return;
@@ -874,7 +1003,10 @@ function buildControls() {
       els.input.setSelectionRange(caret + before * 3, caret + before * 3);
     }
     state.code = v; renderCode(); persist();
+    if (pasted) { pasted = false; autoDetect(); }
   });
+  let pasted = false;
+  els.input.addEventListener("paste", () => { pasted = true; });
   els.input.addEventListener("keydown", e => {
     if (e.key !== "Tab" || e.metaKey || e.ctrlKey || e.altKey) return;
     e.preventDefault();
@@ -1157,7 +1289,7 @@ function sceneToCanvas(scene, s) {
   return c;
 }
 
-function sceneToSVG(scene) {
+function sceneToSVG(scene, fontCSS = "") {
   const n = (v) => +v.toFixed(2);
   const paint = (str) => { const [r, g, b, a] = parseColor(str); return `fill="#${[r, g, b].map(v => Math.round(v).toString(16).padStart(2, "0")).join("")}"${a < 1 ? ` fill-opacity="${n(a)}"` : ""}`; };
   const stop = (off, str, op) => { const [r, g, b, a] = parseColor(str); return `<stop offset="${n(off)}" stop-color="#${[r, g, b].map(v => Math.round(v).toString(16).padStart(2, "0")).join("")}" stop-opacity="${n(a * op)}"/>`; };
@@ -1204,14 +1336,35 @@ function sceneToSVG(scene) {
       body.push(`<text x="${n(o.x)}" y="${n(o.y)}" font-family="${xml(f.family)}" font-size="${f.size}" font-weight="${f.weight}"${f.style !== "normal" ? ` font-style="${f.style}"` : ""} ${paint(o.color)} xml:space="preserve" style="white-space:pre">${xml(o.text)}</text>`);
     }
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${scene.w}" height="${scene.h}" viewBox="0 0 ${scene.w} ${scene.h}"><defs>${defs.join("")}</defs>${body.join("")}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${scene.w}" height="${scene.h}" viewBox="0 0 ${scene.w} ${scene.h}"><defs>${fontCSS ? `<style>${fontCSS}</style>` : ""}${defs.join("")}</defs>${body.join("")}</svg>`;
 }
 
+// Embed the webfont files an SVG uses, when this server has them (the self-hosted build does).
+async function embeddedFontCSS(scene) {
+  const used = new Map();
+  for (const o of scene.ops) {
+    if (o.op !== "text") continue;
+    const f = FONTS.find(x => x.family && o.font.family.includes(x.family));
+    if (!f) continue;
+    const w = [400, 500, 700].reduce((a, b) => Math.abs(b - +o.font.weight) < Math.abs(a - +o.font.weight) ? b : a);
+    used.set(`${f.id}-${w}`, { f, w });
+  }
+  const rules = await Promise.all([...used].map(async ([key, { f, w }]) => {
+    try {
+      const res = await fetch(`fonts/${key}.woff2`);
+      if (!res.ok) return "";
+      const buf = new Uint8Array(await res.arrayBuffer());
+      let bin = ""; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));
+      return `@font-face{font-family:"${f.family}";font-weight:${w};src:url(data:font/woff2;base64,${btoa(bin)}) format("woff2")}`;
+    } catch { return ""; }
+  }));
+  return rules.join("");
+}
 async function render(type) {
   document.activeElement?.blur?.();
   if (document.fonts?.ready) await document.fonts.ready;
   const scene = buildScene();
-  if (type === "svg") return new Blob([sceneToSVG(scene)], { type: "image/svg+xml" });
+  if (type === "svg") return new Blob([sceneToSVG(scene, await embeddedFontCSS(scene))], { type: "image/svg+xml" });
   const canvas = sceneToCanvas(scene, state.scale);
   return new Promise((res, rej) => canvas.toBlob(b => (b ? res(b) : rej(new Error("toBlob"))), "image/png"));
 }
@@ -1251,7 +1404,9 @@ function copyImage() {
 buildControls();
 if (!LANGS.some(l => l[0] === state.lang)) state.lang = "swift";
 state.code = state.code.replace(/\t/g, "    ");
+if (!FONTS.some(f => f.id === state.font)) state.font = defaults.font;
 renderAll();
+loadSharedState();
 downloads();
 if (!window.hljs) toast("Syntax colors didn't load. Check your connection and reload.");
 $("#themeCount").textContent = `${XCODE_THEMES.length} color themes from Xcode, plus your own`;

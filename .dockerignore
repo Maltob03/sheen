@@ -1,0 +1,7 @@
+.git
+.github
+docs
+src
+*.md
+**/.DS_Store
+**/.claude

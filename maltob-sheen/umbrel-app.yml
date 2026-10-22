@@ -1,0 +1,40 @@
+manifestVersion: 1
+id: maltob-sheen
+name: Sheen
+tagline: Beautiful code images in Xcode's own color themes
+icon: https://raw.githubusercontent.com/Maltob03/sheen/main/app/icon.svg
+category: developer
+version: "1.0.0"
+port: 8473
+description: >-
+  Sheen turns code into clean, shareable images styled with the 19 color themes
+  that ship with Xcode: Default, Classic, Presentation, High Contrast, Civic,
+  Dusk, Midnight, Sunset, Low Key, Spartan and more. You can also import your
+  own .xccolortheme files.
+
+
+  Pick a theme, a background and a window style (an Xcode window with tab and
+  path bar, a plain macOS window, or none), choose a font and a frame shape for
+  social posts, then export a PNG at up to 4x or a vector SVG. Colors follow
+  Xcode's own rules, so the types and functions you declare get Xcode's project
+  colors.
+
+
+  Everything runs in your browser and works offline. Your code never leaves
+  your Umbrel.
+developer: Matteo Altobello
+website: https://github.com/Maltob03/sheen
+submitter: Matteo Altobello
+submission: https://github.com/Maltob03/sheen
+repo: https://github.com/Maltob03/sheen
+support: https://github.com/Maltob03/sheen/issues
+gallery:
+  - https://raw.githubusercontent.com/Maltob03/sheen/main/docs/screenshots/1.png
+  - https://raw.githubusercontent.com/Maltob03/sheen/main/docs/screenshots/2.png
+  - https://raw.githubusercontent.com/Maltob03/sheen/main/docs/screenshots/3.png
+releaseNotes: >-
+  First public release.
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""

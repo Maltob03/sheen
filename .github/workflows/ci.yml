@@ -1,0 +1,37 @@
+# Checks that app/ matches src/ and that the image builds and serves the page.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Rebuild app/ and fail if it was out of date
+        run: |
+          python3 src/build.py
+          git diff --exit-code -- app/ || (echo "::error::app/ is out of date. Run python3 src/build.py and commit." && exit 1)
+
+      - name: Build the image
+        run: docker build -t sheen:ci .
+
+      - name: Smoke test
+        run: |
+          docker run -d --name sheen -p 8473:8080 sheen:ci
+          for i in $(seq 1 20); do curl -fsS http://localhost:8473/healthz && break; sleep 1; done
+          curl -fsS http://localhost:8473/ | grep -q "<title>Sheen</title>"
+          curl -fsS -o /dev/null http://localhost:8473/vendor/highlight.min.js
+          curl -fsS -o /dev/null http://localhost:8473/fonts/jetbrains-mono-400.woff2
+          curl -fsSI http://localhost:8473/ | grep -qi "content-security-policy"

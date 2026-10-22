@@ -1,0 +1,7 @@
+# Run Sheen with plain Docker Compose: docker compose up -d, then open http://localhost:8473
+services:
+  sheen:
+    image: ghcr.io/maltob03/sheen:latest
+    ports:
+      - "8473:8080"
+    restart: unless-stopped
