@@ -102,8 +102,8 @@ Paste the output over `XCODE_THEMES` in `src/sheen.html`, then rebuild.
 ### Releasing
 
 1. Bump `VERSION` in `src/build.py`, run it, and add the release to [`CHANGELOG.md`](CHANGELOG.md).
-2. Bump `version` and `releaseNotes` in `maltob-sheen/umbrel-app.yml`, and the image tag in `maltob-sheen/docker-compose.yml`.
-3. Commit, then push a tag such as `v1.1.0`. The **Publish** workflow builds the multi-arch image, pushes `ghcr.io/maltob03/sheen:1.1.0` and `:latest`, and creates the GitHub release. Umbrel offers the update once the manifest version changes.
+2. Commit, then push a tag such as `v1.1.0`. The **Publish** workflow builds the multi-arch image, pushes `ghcr.io/maltob03/sheen:1.1.0` and `:latest`, and creates the GitHub release with the image digest.
+3. Bump `version` and `releaseNotes` in `maltob-sheen/umbrel-app.yml`, and set the image in `maltob-sheen/docker-compose.yml` to the new tag pinned to that digest (`ghcr.io/maltob03/sheen:1.1.0@sha256:…`). Push to `main`; Umbrel offers the update once the manifest version changes.
 
 ## Credits
 

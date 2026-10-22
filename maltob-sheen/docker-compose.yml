@@ -8,5 +8,5 @@ services:
       APP_PORT: 8080
 
   web:
-    image: ghcr.io/maltob03/sheen:1.0.0
+    image: ghcr.io/maltob03/sheen:1.0.0@sha256:c6d9af4f09dadc0147006ec76b4a2ccbf722e54fe985ddcd4319bfd1f3a806df
     restart: on-failure
