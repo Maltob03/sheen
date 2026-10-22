@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      # Format: <app-id>_<docker-service-name>_1
+      APP_HOST: maltob-codeshot_web_1
+      APP_PORT: 8080
+
+  web:
+    image: ghcr.io/maltob03/codeshot:1.0.0
+    restart: on-failure

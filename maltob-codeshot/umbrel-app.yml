@@ -1,0 +1,33 @@
+manifestVersion: 1
+id: maltob-codeshot
+name: Codeshot
+tagline: Turn code into images styled with Xcode's color themes
+icon: https://raw.githubusercontent.com/Maltob03/codeshot/main/app/icon.svg
+category: developer
+version: "1.0.0"
+port: 8473
+description: >-
+  Codeshot turns snippets of code into clean, shareable images, styled with the
+  color themes that ship with Xcode: Default, Classic, Presentation, High
+  Contrast, Civic, Dusk, Midnight, Sunset, Low Key, Spartan and more.
+
+
+  Pick a theme, a background and a window style (an Xcode window with tab and
+  path bar, a plain macOS window, or none), then export a PNG at up to 4x or a
+  vector SVG. You can also import your own .xccolortheme files.
+
+
+  Everything runs in your browser. Your code never leaves your Umbrel.
+developer: Matteo Altobello
+website: https://github.com/Maltob03/codeshot
+submitter: Matteo Altobello
+submission: https://github.com/Maltob03/codeshot
+repo: https://github.com/Maltob03/codeshot
+support: https://github.com/Maltob03/codeshot/issues
+gallery: []
+releaseNotes: >-
+  First release.
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
