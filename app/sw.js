@@ -1,5 +1,5 @@
 // Sheen service worker: serves the app offline. Generated into app/sw.js by src/build.py.
-const CACHE = "sheen-1.0.0-eec1a40dc7";
+const CACHE = "sheen-1.0.1-160274e02b";
 const ASSETS = ["./", "fonts/fira-code-400.woff2", "fonts/fira-code-500.woff2", "fonts/fira-code-700.woff2", "fonts/fonts.css", "fonts/geist-mono-400.woff2", "fonts/geist-mono-500.woff2", "fonts/geist-mono-700.woff2", "fonts/ibm-plex-mono-400.woff2", "fonts/ibm-plex-mono-500.woff2", "fonts/ibm-plex-mono-700.woff2", "fonts/jetbrains-mono-400.woff2", "fonts/jetbrains-mono-500.woff2", "fonts/jetbrains-mono-700.woff2", "icon-180.png", "icon-192.png", "icon-512.png", "icon.svg", "index.html", "manifest.webmanifest", "vendor/highlight.min.js"];
 
 self.addEventListener("install", (event) => {

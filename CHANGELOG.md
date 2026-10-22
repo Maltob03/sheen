@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- The preview now scales down to fit the screen, so the whole image is always visible without scrolling. Exports are still full size.
+
 ## 1.0.0
 
 First public release.
